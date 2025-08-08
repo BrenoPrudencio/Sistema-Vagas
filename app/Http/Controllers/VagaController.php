@@ -13,6 +13,9 @@ class VagaController extends Controller
      */
     public function index(Request $request)
     {
+    
+    $perPage = $request->input('per_page', 20);
+
     $query = Vaga::query();
 
     // FILTRO 1: Pelo campo de busca de texto (título)
@@ -30,10 +33,18 @@ class VagaController extends Controller
         return $q->where('status', $request->status);
     });
 
-    $vagas = $query->latest()->paginate(20)->withQueryString();
+    $vagas = $query->orderBy('id', 'asc')->paginate($perPage)->withQueryString();
 
     return view('vagas.index', ['vagas' => $vagas]);
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('vagas.create');
+    }    
 
     /**
      * Store a newly created resource in storage.
@@ -134,4 +145,17 @@ class VagaController extends Controller
 
         return redirect()->back()->with('success', 'Inscrição do candidato cancelada com sucesso!');
     }
+    public function destroyMass(Request $request)
+{
+        // Valida se 'ids' foi enviado e se é um array
+        $request->validate([
+            'ids' => 'required|array'
+    ]);
+
+        // Deleta todas as vagas cujos IDs estão no array
+        Vaga::destroy($request->ids);
+
+        return redirect()->route('vagas.index')
+                     ->with('success', 'Vagas selecionadas excluídas com sucesso!');
+}
 }

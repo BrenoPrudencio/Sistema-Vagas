@@ -12,17 +12,22 @@ class CandidatoController extends Controller
      */
     public function index(Request $request)
     {
+        // Pega o valor de itens por página da requisição, com um padrão de 20
+        $perPage = $request->input('per_page', 20);
+
+        // Inicia a construção da consulta ao banco
         $query = Candidato::query();
 
+        // Adiciona a condição de busca SE o parâmetro 'search' existir na requisição
         $query->when($request->search, function ($q) use ($request) {
-            // Adiciona uma cláusula WHERE que busca em MÚLTIPLAS colunas
             return $q->where(function ($subQuery) use ($request) {
                 $subQuery->where('nome', 'like', '%' . $request->search . '%')
                          ->orWhere('email', 'like', '%' . $request->search . '%');
             });
         });
 
-        $candidatos = $query->orderBy('id', 'asc')->paginate(20)->withQueryString();
+        // Ordena e executa a paginação com o valor de $perPage, mantendo os filtros nos links
+        $candidatos = $query->orderBy('id', 'asc')->paginate($perPage)->withQueryString();
 
         return view('candidatos.index', ['candidatos' => $candidatos]);
     }
@@ -60,6 +65,8 @@ class CandidatoController extends Controller
      */
     public function show(Candidato $candidato)
     {
+        // Este método pode ser usado no futuro para ver detalhes de um candidato
+        // Note que não criamos a view 'candidatos.show', então isso daria erro se chamado.
         return view('candidatos.show', ['candidato' => $candidato]);
     }
 
@@ -100,5 +107,24 @@ class CandidatoController extends Controller
 
         return redirect()->route('candidatos.index')
                          ->with('success', 'Candidato excluído com sucesso!');
+    }
+
+    /**
+     * 
+     * NOVO MÉTODO PARA DELEÇÃO EM MASSA
+     */
+    public function destroyMass(Request $request)
+    {
+        // Valida se 'ids' foi enviado e se é um array de IDs existentes na tabela candidatos
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:candidatos,id', 
+        ]);
+
+        // Deleta todos os candidatos cujos IDs estão no array
+        Candidato::destroy($request->ids);
+
+        return redirect()->route('candidatos.index')
+                         ->with('success', 'Candidatos selecionados excluídos com sucesso!');
     }
 }
