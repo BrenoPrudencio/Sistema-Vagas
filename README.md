@@ -1,61 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Gestão de Vagas e Candidaturas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Página de Listagem de Vagas](<img width="1895" height="989" alt="Image" src="https://github.com/user-attachments/assets/bed25b11-f3a8-462a-9953-84d0f583d624" />)  
+Aplicação web full-stack desenvolvida como parte de um desafio técnico para demonstrar competências em desenvolvimento backend com **PHP** e o framework **Laravel**. O sistema simula uma plataforma de recrutamento, permitindo o gerenciamento completo de vagas de emprego e de candidatos.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Tecnologias Utilizadas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend:** PHP 8.4, Laravel 12
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5, Tailwind CSS (via Laravel Breeze)
+- **Banco de Dados:** MySQL (ou Postgres, configurável)
+- **Gerenciamento de Dependências:** Composer, NPM
+- **Testes:** PHPUnit
+- **Versionamento:** Git & GitHub
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ✨ Funcionalidades Principais
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Este projeto implementa todas as funcionalidades solicitadas no desafio, incluindo diversos bônus para demonstrar uma aplicação mais robusta e completa.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Autenticação de Usuários
+- Sistema completo de **Registro** e **Login** utilizando Laravel Breeze.
+- As rotas de gerenciamento são protegidas, garantindo que apenas usuários autenticados possam acessar, criar, editar ou excluir dados.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. CRUD de Vagas
+- **Criação, Leitura, Atualização e Exclusão (CRUD)** de vagas de emprego.
+- **Pausa de Vagas:** Uma vaga pode ter seu status alterado para "Pausada", o que impede que novos candidatos se inscrevam nela.
+- **Listagem com Filtros:** A lista de vagas é paginada e pode ser filtrada dinamicamente por título, tipo de contratação (CLT, PJ, Freelancer) e status (Ativa, Pausada).
 
-## Laravel Sponsors
+### 3. CRUD de Candidatos
+- **CRUD completo** para o gerenciamento de candidatos.
+- **Formatação de Dados:** O campo de telefone possui uma máscara de entrada no front-end para melhorar a experiência do usuário.
+- **Listagem com Filtros:** A lista de candidatos é paginada e permite busca por nome ou e-mail.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. Sistema de Inscrição
+- **Relação Muitos-para-Muitos:** Um candidato pode se inscrever em múltiplas vagas, e uma vaga pode ter múltiplos candidatos.
+- **Interface de Inscrição:** Quando clica no título de uma vaga, é possível ver a lista de candidatos já inscritos e inscrever novos candidatos a partir de uma lista.
+- **Cancelamento de Inscrição:** É possível remover a inscrição de um candidato de uma vaga específica.
 
-### Premium Partners
+### 5. Melhorias de Usabilidade (Bônus)
+- **Deleção em Massa:** As listas de vagas e candidatos permitem a seleção de múltiplos itens para exclusão em uma única ação.
+- **Controle de Paginação:** O usuário pode escolher quantos itens deseja exibir por página (10, 20 ou 50).
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 6. API RESTful (Bônus)
+- **Endpoints JSON:** Foram criados endpoints de API para os CRUDs de Vagas e Candidatos, retornando os dados em formato JSON.
+- **Estrutura Organizada:** A API possui seus próprios controllers e rotas (`/api/*`), separada da aplicação web.
 
-## Contributing
+### 7. Qualidade e Boas Práticas
+- **Testes Automatizados:** O projeto conta com uma suíte de testes de funcionalidade (Feature Tests) que cobrem os "caminhos felizes" e os "caminhos tristes" (validação) para os CRUDs, garantindo a estabilidade do código.
+- **Dados de Teste (Seeders):** O banco de dados pode ser populado com um grande volume de dados falsos (`migrate:fresh --seed`), facilitando a demonstração de funcionalidades como paginação e filtros.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## ⚙️ Como Executar o Projeto Localmente
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Siga os passos abaixo para configurar e rodar a aplicação.
 
-## Security Vulnerabilities
+### Pré-requisitos
+- PHP (versão compatível com Laravel 12)
+- Composer
+- Node.js e NPM
+- Um servidor de banco de dados (ex: MySQL)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Passo a Passo
 
-## License
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/BrenoPrudencio/Sistema-Vagas.git
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2.  **Navegue até a pasta do projeto:**
+    ```bash
+    cd Sistema-Vagas
+    ```
+
+3.  **Instale as dependências do PHP:**
+    ```bash
+    composer install
+    ```
+
+4.  **Instale as dependências do JavaScript:**
+    ```bash
+    npm install
+    ```
+
+5.  **Configure o Ambiente:**
+    Copie o arquivo de exemplo `.env` e gere a chave da aplicação.
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+6.  **Configure o Banco de Dados:**
+    Abra o arquivo `.env` e atualize as credenciais do seu banco de dados.
+    ```
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=sistema_vagas
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+    *Lembre-se de criar um banco de dados vazio com o nome `sistema_vagas`.*
+
+7.  **Crie a Estrutura e Popule o Banco:**
+    Este comando irá criar todas as tabelas e preenchê-las com dados de teste.
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+8.  **Compile os Assets para Produção:**
+    ```bash
+    npm run build
+    ```
+
+9.  **Inicie o Servidor:**
+    ```bash
+    php artisan serve
+    ```
+
+10. **Acesse e Utilize:**
+    - Abra seu navegador e acesse `http://127.0.0.1:8000`.
+    - Clique em **"Register"** para criar uma conta.
+    - Após o login, você será redirecionado para o Dashboard, onde poderá navegar para as seções de **Vagas** e **Candidatos** através do menu superior.
+
+---
