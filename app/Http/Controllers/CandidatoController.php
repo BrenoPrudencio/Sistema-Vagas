@@ -12,10 +12,8 @@ class CandidatoController extends Controller
      */
     public function index(Request $request)
     {
-        // Pega o valor de itens por página da requisição, com um padrão de 20
         $perPage = $request->input('per_page', 20);
 
-        // Inicia a construção da consulta ao banco
         $query = Candidato::query();
 
         // Adiciona a condição de busca SE o parâmetro 'search' existir na requisição
@@ -66,7 +64,6 @@ class CandidatoController extends Controller
     public function show(Candidato $candidato)
     {
         // Este método pode ser usado no futuro para ver detalhes de um candidato
-        // Note que não criamos a view 'candidatos.show', então isso daria erro se chamado.
         return view('candidatos.show', ['candidato' => $candidato]);
     }
 

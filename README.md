@@ -1,6 +1,6 @@
 # Sistema de Gestão de Vagas e Candidaturas
 
-![Página de Listagem de Vagas](<img width="1895" height="989" alt="Image" src="https://github.com/user-attachments/assets/bed25b11-f3a8-462a-9953-84d0f583d624" />)  
+![Página de Listagem de Vagas](https://i.imgur.com/3xA8l1f.png)  
 Aplicação web full-stack desenvolvida como parte de um desafio técnico para demonstrar competências em desenvolvimento backend com **PHP** e o framework **Laravel**. O sistema simula uma plataforma de recrutamento, permitindo o gerenciamento completo de vagas de emprego e de candidatos.
 
 ---
