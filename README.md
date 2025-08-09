@@ -57,6 +57,14 @@ Este projeto implementa todas as funcionalidades solicitadas no desafio, incluin
 
 Siga os passos abaixo para configurar e rodar a aplicação.
 
+### Nota sobre o Ambiente de Execução (Docker & Laragon)
+
+O desafio original solicitava a criação de um ambiente com Docker. O projeto foi preparado para isso através da instalação do **Laravel Sail**. No entanto, durante a configuração, encontrei instabilidades específicas com a minha instalação local do WSL2 (Subsistema do Windows para Linux), que é um pré-requisito para o Docker/Sail no Windows.
+
+Para garantir a entrega de uma aplicação 100% funcional e estável dentro do prazo, tomei a decisão de prosseguir com um ambiente de desenvolvimento padrão utilizando **Laragon**. O código da aplicação permanece totalmente compatível e pode ser facilmente executado com o Sail em um ambiente WSL funcional.
+
+As instruções de instalação a seguir são baseadas no ambiente Laragon/XAMPP para garantir uma experiência de teste sem atritos.
+
 ### Pré-requisitos
 - PHP (versão compatível com Laravel 12)
 - Composer
