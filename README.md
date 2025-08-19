@@ -7,9 +7,10 @@ Aplicação web full-stack desenvolvida como parte de um desafio técnico para d
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** PHP 8.4, Laravel 12
+- **Backend:** PHP, Laravel
 - **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5, Tailwind CSS (via Laravel Breeze)
-- **Banco de Dados:** MySQL (ou Postgres, configurável)
+- **Banco de Dados:** MySQL
+- **Ambiente de Desenvolvimento:** Docker, Laravel Sail
 - **Gerenciamento de Dependências:** Composer, NPM
 - **Testes:** PHPUnit
 - **Versionamento:** Git & GitHub
@@ -27,7 +28,7 @@ Este projeto implementa todas as funcionalidades solicitadas no desafio, incluin
 ### 2. CRUD de Vagas
 - **Criação, Leitura, Atualização e Exclusão (CRUD)** de vagas de emprego.
 - **Pausa de Vagas:** Uma vaga pode ter seu status alterado para "Pausada", o que impede que novos candidatos se inscrevam nela.
-- **Listagem com Filtros:** A lista de vagas é paginada e pode ser filtrada dinamicamente por título, tipo de contratação (CLT, PJ, Freelancer) e status (Ativa, Pausada).
+- **Listagem com Filtros:** A lista de vagas é paginada e pode ser filtrada dinamicamente por título, tipo de contratação e status.
 
 ### 3. CRUD de Candidatos
 - **CRUD completo** para o gerenciamento de candidatos.
@@ -36,40 +37,30 @@ Este projeto implementa todas as funcionalidades solicitadas no desafio, incluin
 
 ### 4. Sistema de Inscrição
 - **Relação Muitos-para-Muitos:** Um candidato pode se inscrever em múltiplas vagas, e uma vaga pode ter múltiplos candidatos.
-- **Interface de Inscrição:** Quando clica no título de uma vaga, é possível ver a lista de candidatos já inscritos e inscrever novos candidatos a partir de uma lista.
+- **Interface de Inscrição:** Na página de detalhes de uma vaga, é possível ver a lista de candidatos já inscritos e inscrever novos candidatos.
 - **Cancelamento de Inscrição:** É possível remover a inscrição de um candidato de uma vaga específica.
 
 ### 5. Melhorias de Usabilidade (Bônus)
 - **Deleção em Massa:** As listas de vagas e candidatos permitem a seleção de múltiplos itens para exclusão em uma única ação.
-- **Controle de Paginação:** O usuário pode escolher quantos itens deseja exibir por página (10, 20 ou 50).
+- **Controle de Paginação:** O usuário pode escolher quantos itens deseja exibir por página.
 
 ### 6. API RESTful (Bônus)
 - **Endpoints JSON:** Foram criados endpoints de API para os CRUDs de Vagas e Candidatos, retornando os dados em formato JSON.
-- **Estrutura Organizada:** A API possui seus próprios controllers e rotas (`/api/*`), separada da aplicação web.
 
 ### 7. Qualidade e Boas Práticas
-- **Testes Automatizados:** O projeto conta com uma suíte de testes de funcionalidade (Feature Tests) que cobrem os "caminhos felizes" e os "caminhos tristes" (validação) para os CRUDs, garantindo a estabilidade do código.
-- **Dados de Teste (Seeders):** O banco de dados pode ser populado com um grande volume de dados falsos (`migrate:fresh --seed`), facilitando a demonstração de funcionalidades como paginação e filtros.
+- **Ambiente Dockerizado:** A aplicação utiliza **Laravel Sail**, garantindo um ambiente de desenvolvimento consistente, portátil e isolado.
+- **Testes Automatizados:** O projeto conta com uma suíte de testes de funcionalidade (Feature Tests) que cobrem os CRUDs.
+- **Dados de Teste (Seeders):** O banco de dados pode ser populado com um grande volume de dados falsos.
 
 ---
 
-## ⚙️ Como Executar o Projeto Localmente
+## 🐳 Instalação com Docker (Laravel Sail) - Método Recomendado
 
-Siga os passos abaixo para configurar e rodar a aplicação.
-
-### Nota sobre o Ambiente de Execução (Docker & Laragon)
-
-O desafio original solicitava a criação de um ambiente com Docker. O projeto foi preparado para isso através da instalação do **Laravel Sail**. No entanto, durante a configuração, encontrei instabilidades específicas com a minha instalação local do WSL2 (Subsistema do Windows para Linux), que é um pré-requisito para o Docker/Sail no Windows.
-
-Para garantir a entrega de uma aplicação 100% funcional e estável dentro do prazo, tomei a decisão de prosseguir com um ambiente de desenvolvimento padrão utilizando **Laragon**. O código da aplicação permanece totalmente compatível e pode ser facilmente executado com o Sail em um ambiente WSL funcional.
-
-As instruções de instalação a seguir são baseadas no ambiente Laragon/XAMPP para garantir uma experiência de teste sem atritos.
+Este projeto foi configurado para ser executado em um ambiente Docker, garantindo consistência e facilidade na configuração.
 
 ### Pré-requisitos
-- PHP (versão compatível com Laravel 12)
-- Composer
-- Node.js e NPM
-- Um servidor de banco de dados (ex: MySQL)
+- Docker Desktop
+- WSL2 (para usuários Windows) ou um ambiente Linux/macOS.
 
 ### Passo a Passo
 
@@ -83,54 +74,43 @@ As instruções de instalação a seguir são baseadas no ambiente Laragon/XAMPP
     cd Sistema-Vagas
     ```
 
-3.  **Instale as dependências do PHP:**
-    ```bash
-    composer install
-    ```
-
-4.  **Instale as dependências do JavaScript:**
-    ```bash
-    npm install
-    ```
-
-5.  **Configure o Ambiente:**
-    Copie o arquivo de exemplo `.env` e gere a chave da aplicação.
+3.  **Configure o Ambiente:**
+    Copie o arquivo de exemplo `.env`. Ele já vem pré-configurado para o Sail.
     ```bash
     cp .env.example .env
-    php artisan key:generate
     ```
 
-6.  **Configure o Banco de Dados:**
-    Abra o arquivo `.env` e atualize as credenciais do seu banco de dados.
-    ```
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=sistema_vagas
-    DB_USERNAME=root
-    DB_PASSWORD=
-    ```
-    *Lembre-se de criar um banco de dados vazio com o nome `sistema_vagas`.*
-
-7.  **Crie a Estrutura e Popule o Banco:**
-    Este comando irá criar todas as tabelas e preenchê-las com dados de teste.
+4.  **Instale as dependências do Composer:**
+    *Este comando usa uma imagem Docker temporária para instalar os pacotes PHP.*
     ```bash
-    php artisan migrate:fresh --seed
+    docker run --rm \
+        -u "$(id -u):$(id -g)" \
+        -v "$(pwd):/var/www/html" \
+        -w /var/www/html \
+        laravelsail/php83-composer:latest \
+        composer install --ignore-platform-reqs
     ```
 
-8.  **Compile os Assets para Produção:**
+5.  **Inicie os Containers do Sail:**
+    *O download das imagens pode ser demorado na primeira vez.*
     ```bash
-    npm run build
+    # Para Linux/macOS/WSL
+    ./vendor/bin/sail up -d
     ```
 
-9.  **Inicie o Servidor:**
+6.  **Execute os Comandos de Finalização:**
+    *Use o Sail para executar os comandos Artisan e NPM dentro dos containers.*
     ```bash
-    php artisan serve
+    ./vendor/bin/sail npm install
+    ./vendor/bin/sail artisan key:generate
+    ./vendor/bin/sail artisan migrate:fresh --seed
+    ./vendor/bin/sail npm run build
     ```
 
-10. **Acesse e Utilize:**
-    - Abra seu navegador e acesse `http://127.0.0.1:8000`.
-    - Clique em **"Register"** para criar uma conta.
-    - Após o login, você será redirecionado para o Dashboard, onde poderá navegar para as seções de **Vagas** e **Candidatos** através do menu superior.
+7.  **Acesse a Aplicação:**
+    - Abra seu navegador e acesse `http://localhost`.
+    - Você pode se registrar com um novo usuário para começar.
+
+Para parar os containers, use o comando `./vendor/bin/sail down`.
 
 ---
