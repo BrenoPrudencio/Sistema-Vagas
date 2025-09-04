@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidato;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CandidatoController extends Controller
 {
@@ -16,16 +17,20 @@ class CandidatoController extends Controller
 
         $query = Candidato::query();
 
-        // Adiciona a condição de busca SE o parâmetro 'search' existir na requisição
         $query->when($request->search, function ($q) use ($request) {
-            return $q->where(function ($subQuery) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
                 $subQuery->where('nome', 'like', '%' . $request->search . '%')
                          ->orWhere('email', 'like', '%' . $request->search . '%');
             });
         });
 
-        // Ordena e executa a paginação com o valor de $perPage, mantendo os filtros nos links
-        $candidatos = $query->orderBy('id', 'asc')->paginate($perPage)->withQueryString();
+        if ($request->filled('pcd')) {
+            $query->where('pcd', (bool)$request->pcd);
+        }
+
+        $candidatos = $query->orderBy('id', 'asc')
+                            ->paginate($perPage)
+                            ->withQueryString();
 
         return view('candidatos.index', ['candidatos' => $candidatos]);
     }
@@ -43,19 +48,13 @@ class CandidatoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:candidatos,email',
-            'telefone' => 'required|string|max:20',
-        ]);
+        $data = $this->validateData($request);
 
-        $dadosCandidato = $request->all();
-        $dadosCandidato['telefone'] = preg_replace('/[^0-9]/', '', $request->telefone);
+        Candidato::create($data);
 
-        Candidato::create($dadosCandidato);
-
-        return redirect()->route('candidatos.index')
-                         ->with('success', 'Candidato criado com sucesso!');
+        return redirect()
+            ->route('candidatos.index')
+            ->with('success', 'Candidato criado com sucesso!');
     }
 
     /**
@@ -63,7 +62,6 @@ class CandidatoController extends Controller
      */
     public function show(Candidato $candidato)
     {
-        // Este método pode ser usado no futuro para ver detalhes de um candidato
         return view('candidatos.show', ['candidato' => $candidato]);
     }
 
@@ -80,19 +78,13 @@ class CandidatoController extends Controller
      */
     public function update(Request $request, Candidato $candidato)
     {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:candidatos,email,' . $candidato->id,
-            'telefone' => 'required|string|max:20',
-        ]);
+        $data = $this->validateData($request, $candidato->id);
 
-        $dadosCandidato = $request->all();
-        $dadosCandidato['telefone'] = preg_replace('/[^0-9]/', '', $request->telefone);
+        $candidato->update($data);
 
-        $candidato->update($dadosCandidato);
-
-        return redirect()->route('candidatos.index')
-                         ->with('success', 'Candidato atualizado com sucesso!');
+        return redirect()
+            ->route('candidatos.index') 
+            ->with('success', 'Candidato atualizado com sucesso!');
     }
 
     /**
@@ -102,26 +94,69 @@ class CandidatoController extends Controller
     {
         $candidato->delete();
 
-        return redirect()->route('candidatos.index')
-                         ->with('success', 'Candidato excluído com sucesso!');
+        return redirect()
+            ->route('candidatos.index')
+            ->with('success', 'Candidato excluído com sucesso!');
     }
 
     /**
-     * 
-     * NOVO MÉTODO PARA DELEÇÃO EM MASSA
+     * Deleção em massa.
      */
     public function destroyMass(Request $request)
     {
-        // Valida se 'ids' foi enviado e se é um array de IDs existentes na tabela candidatos
         $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:candidatos,id', 
+            'ids' => ['required','array'],
+            'ids.*' => ['exists:candidatos,id'],
         ]);
 
-        // Deleta todos os candidatos cujos IDs estão no array
         Candidato::destroy($request->ids);
 
-        return redirect()->route('candidatos.index')
-                         ->with('success', 'Candidatos selecionados excluídos com sucesso!');
+        return redirect()
+            ->route('candidatos.index')
+            ->with('success', 'Candidatos selecionados excluídos com sucesso!');
+    }
+
+    /**
+     * Validação e normalização comum (store/update).
+     */
+    protected function validateData(Request $request, ?int $ignoreId = null): array
+    {
+        $rules = [
+            'nome' => ['required','string','max:255'],
+            'email' => [
+                'required','email','max:255',
+                Rule::unique('candidatos','email')->ignore($ignoreId),
+            ],
+            'telefone' => ['required','string','max:20'],
+            'curriculo' => ['nullable','string','max:255'],
+            'pcd' => ['nullable','boolean'],
+            'tipo_deficiencia' => ['nullable','string','max:100'],
+            'acessibilidade' => ['nullable','string','max:500'],
+        ];
+
+        $validated = $request->validate($rules);
+
+        // Normaliza telefone (apenas dígitos)
+        $validated['telefone'] = preg_replace('/\D+/', '', $validated['telefone']);
+
+        // Normaliza checkbox PCD
+        $validated['pcd'] = $request->boolean('pcd');
+
+        // Se não é PCD, limpa campos relacionados
+        if (! $validated['pcd']) {
+            $validated['tipo_deficiencia'] = null;
+            $validated['acessibilidade'] = null;
+        }
+
+        // Garante que apenas campos esperados vão para o create/update
+        return [
+            'nome' => $validated['nome'],
+            'email' => $validated['email'],
+            'telefone' => $validated['telefone'],
+            'curriculo' => $validated['curriculo'] ?? null,
+            'pcd' => $validated['pcd'],
+            'tipo_deficiencia' => $validated['tipo_deficiencia'],
+            'acessibilidade' => $validated['acessibilidade'],
+        ];
     }
 }

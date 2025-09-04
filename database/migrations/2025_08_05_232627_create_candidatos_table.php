@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('telefone', 20);
             $table->string('curriculo')->nullable();
+            $table->boolean('pcd')->default(false);
+            $table->string('tipo_deficiencia', 100)->nullable();
+            $table->text('acessibilidade')->nullable();
+
             $table->timestamps();
         });
     }

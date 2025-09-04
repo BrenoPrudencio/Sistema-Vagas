@@ -91,7 +91,7 @@ class VagaController extends Controller
      */
     public function update(Request $request, Vaga $vaga)
     {
-        $request->validate([
+        $request->validate([    
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'tipo_contratacao' => 'required|in:CLT,PJ,Freelancer',

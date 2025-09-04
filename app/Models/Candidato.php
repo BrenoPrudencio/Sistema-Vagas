@@ -14,12 +14,19 @@ class Candidato extends Model
         'email',
         'telefone',
         'curriculo',
+        'pcd',
+        'tipo_deficiencia',
+        'acessibilidade',
     ];
-/**
- * Retorna o telefone formatado.
- *
- * @return string
- */
+    protected $casts = [
+        'pcd' => 'boolean',
+    ];
+
+    /**
+     * Retorna o telefone formatado.
+     *
+     * @return string
+     */
     public function getTelefoneFormatadoAttribute()
     {
         $telefone = $this->telefone;
